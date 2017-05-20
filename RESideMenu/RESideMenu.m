@@ -38,8 +38,8 @@
 @property (strong, readwrite, nonatomic) UIView *menuViewContainer;
 @property (strong, readwrite, nonatomic) UIView *contentViewContainer;
 @property (assign, readwrite, nonatomic) BOOL didNotifyDelegate;
-// --m
-@property (strong, readwrite, nonatomic) UIView *maskView;
+
+@property (strong, readwrite, nonatomic) UIView *maskView; //M
 
 @end
 
@@ -69,7 +69,7 @@
 #if __IPHONE_8_0
 - (void)awakeFromNib
 {
-    [super awakeFromNib];
+    [super awakeFromNib]; //M
     if (self.contentViewStoryboardID) {
         self.contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:self.contentViewStoryboardID];
     }
@@ -119,12 +119,14 @@
     _contentViewInPortraitOffsetCenterX  = 30.f;
     _contentViewScaleValue = 0.7f;
     
-    _maskView = [[UIView alloc] init];
-    _maskView.frame = [UIScreen mainScreen].bounds;
-    _maskView.alpha = 0.f;
-    _maskView.hidden = YES;
-    _contentMaskViewAlpha = 1.0f;
-    _maskViewEnabled = YES;
+    _panGesturePointX = 50.f; //M
+    
+    _maskView = [[UIView alloc] init]; //M
+    _maskView.frame = [UIScreen mainScreen].bounds; //M
+    _maskView.alpha = 0.f; //M
+    _maskView.hidden = YES; //M
+    _contentMaskViewAlpha = 1.0f; //M
+    _maskViewEnabled = YES; //M
 }
 
 #pragma mark -
@@ -178,7 +180,7 @@
             [self hideViewController:self.contentViewController];
             [contentViewController didMoveToParentViewController:self];
             _contentViewController = contentViewController;
-            [_contentViewController.view addSubview:self.maskView];
+            [_contentViewController.view addSubview:self.maskView]; //M
             [self statusBarNeedsAppearanceUpdate];
             [self updateContentViewShadow];
             
@@ -255,9 +257,9 @@
     }
     
     [self updateContentViewShadow];
-    // --m
-    self.maskView.backgroundColor = self.contentMaskColor;
-    [_contentViewController.view addSubview:self.maskView];
+
+    self.maskView.backgroundColor = self.contentMaskColor; //M
+    [_contentViewController.view addSubview:self.maskView]; //M
 }
 
 #pragma mark -
@@ -296,7 +298,7 @@
     [self addContentButton];
     [self updateContentViewShadow];
     [self resetContentViewScale];
-    self.maskView.hidden = self.maskViewEnabled ? NO : YES;
+    self.maskView.hidden = self.maskViewEnabled ? NO : YES; //M
    
     [UIView animateWithDuration:self.animationDuration animations:^{
         if (self.scaleContentView) {
@@ -310,8 +312,8 @@
         } else {
             self.contentViewContainer.center = CGPointMake((UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ? self.contentViewInLandscapeOffsetCenterX + CGRectGetHeight(self.view.frame) : self.contentViewInPortraitOffsetCenterX + CGRectGetWidth(self.view.frame)), self.contentViewContainer.center.y);
         }
-        // --m
-        self.maskView.alpha = self.maskViewEnabled ? self.contentMaskViewAlpha : 0.f;
+        
+        self.maskView.alpha = self.maskViewEnabled ? self.contentMaskViewAlpha : 0.f; //M
         self.menuViewContainer.alpha = !self.fadeMenuView ?: 1.0f;
         self.contentViewContainer.alpha = self.contentViewFadeOutAlpha;
         self.menuViewContainer.transform = CGAffineTransformIdentity;
@@ -345,7 +347,7 @@
     [self addContentButton];
     [self updateContentViewShadow];
     [self resetContentViewScale];
-    self.maskView.hidden = self.maskViewEnabled ? NO : YES;
+    self.maskView.hidden = self.maskViewEnabled ? NO : YES; //M
     
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     [UIView animateWithDuration:self.animationDuration animations:^{
@@ -355,8 +357,8 @@
             self.contentViewContainer.transform = CGAffineTransformIdentity;
         }
         self.contentViewContainer.center = CGPointMake((UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ? -self.contentViewInLandscapeOffsetCenterX : -self.contentViewInPortraitOffsetCenterX), self.contentViewContainer.center.y);
-        // --m
-        self.maskView.alpha = self.maskViewEnabled ? self.contentMaskViewAlpha : 0.f;
+        
+        self.maskView.alpha = self.maskViewEnabled ? self.contentMaskViewAlpha : 0.f; //M
         self.menuViewContainer.alpha = !self.fadeMenuView ?: 1.0f;
         self.contentViewContainer.alpha = self.contentViewFadeOutAlpha;
         self.menuViewContainer.transform = CGAffineTransformIdentity;
@@ -410,7 +412,7 @@
             strongSelf.menuViewContainer.transform = strongSelf.menuViewControllerTransformation;
         }
         strongSelf.menuViewContainer.alpha = !self.fadeMenuView ?: 0;
-        strongSelf.maskView.alpha = 0;
+        strongSelf.maskView.alpha = 0; //M
         strongSelf.contentViewContainer.alpha = 1;
         if (strongSelf.scaleBackgroundImageView) {
             strongSelf.backgroundImageView.transform = CGAffineTransformMakeScale(1.7f, 1.7f);
@@ -555,7 +557,7 @@
   
     if (self.panFromEdge && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && !self.visible) {
         CGPoint point = [touch locationInView:gestureRecognizer.view];
-        if (point.x < 50.0 || point.x > self.view.frame.size.width - 50.0) {
+        if (point.x < _panGesturePointX || point.x > self.view.frame.size.width - _panGesturePointX) { //M
             return YES;
         } else {
             return NO;
@@ -594,7 +596,7 @@
         [self addContentButton];
         [self.view.window endEditing:YES];
         self.didNotifyDelegate = NO;
-        self.maskView.hidden = NO;
+        self.maskView.hidden = NO; //M
     }
     
     if (recognizer.state == UIGestureRecognizerStateChanged) {
@@ -618,7 +620,7 @@
         }
         
         self.menuViewContainer.alpha = !self.fadeMenuView ?: delta;
-        self.maskView.alpha = self.maskViewEnabled ? self.contentMaskViewAlpha * delta : 0.f;
+        self.maskView.alpha = self.maskViewEnabled ? self.contentMaskViewAlpha * delta : 0.f; //M
 
         self.contentViewContainer.alpha = 1 - (1 - self.contentViewFadeOutAlpha) * delta;
         
@@ -643,12 +645,12 @@
             if (self.contentViewContainer.frame.origin.x < -(self.contentViewContainer.frame.size.width / 2.0))
                 point.x = MAX(0.0, point.x);
         }
-        
-
+        // Limit size
+        //
         if (point.x < 0) {
-            point.x = MAX(point.x, -([UIScreen mainScreen].bounds.size.width / 2 + self.contentViewInPortraitOffsetCenterX));
+            point.x = MAX(point.x, -([UIScreen mainScreen].bounds.size.width / 2 + self.contentViewInPortraitOffsetCenterX)); //M
         } else {
-            point.x = MIN(point.x, [UIScreen mainScreen].bounds.size.width / 2 + self.contentViewInPortraitOffsetCenterX);
+            point.x = MIN(point.x, [UIScreen mainScreen].bounds.size.width / 2 + self.contentViewInPortraitOffsetCenterX); //M
         }
         
         [recognizer setTranslation:point inView:self.view];
@@ -716,7 +718,7 @@
                     }
                 }
             } else {
-                if (self.contentViewContainer.frame.origin.x < 20) {
+                if (self.contentViewContainer.frame.origin.x < _panGesturePointX) {
                     if (self.rightMenuViewController) {
                         [self showRightMenuViewController];
                     }
