@@ -38,6 +38,8 @@
 @property (strong, readwrite, nonatomic) UIView *menuViewContainer;
 @property (strong, readwrite, nonatomic) UIView *contentViewContainer;
 @property (assign, readwrite, nonatomic) BOOL didNotifyDelegate;
+// --m
+@property (strong, readwrite, nonatomic) UIView *maskView;
 
 @end
 
@@ -67,6 +69,7 @@
 #if __IPHONE_8_0
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     if (self.contentViewStoryboardID) {
         self.contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:self.contentViewStoryboardID];
     }
@@ -115,6 +118,13 @@
     _contentViewInLandscapeOffsetCenterX = 30.f;
     _contentViewInPortraitOffsetCenterX  = 30.f;
     _contentViewScaleValue = 0.7f;
+    
+    _maskView = [[UIView alloc] init];
+    _maskView.frame = [UIScreen mainScreen].bounds;
+    _maskView.alpha = 0.f;
+    _maskView.hidden = YES;
+    _contentMaskViewAlpha = 1.0f;
+    _maskViewEnabled = YES;
 }
 
 #pragma mark -
@@ -168,7 +178,7 @@
             [self hideViewController:self.contentViewController];
             [contentViewController didMoveToParentViewController:self];
             _contentViewController = contentViewController;
-
+            [_contentViewController.view addSubview:self.maskView];
             [self statusBarNeedsAppearanceUpdate];
             [self updateContentViewShadow];
             
@@ -177,6 +187,7 @@
             }
         }];
     }
+   
 }
 
 #pragma mark View life cycle
@@ -244,6 +255,9 @@
     }
     
     [self updateContentViewShadow];
+    // --m
+    self.maskView.backgroundColor = self.contentMaskColor;
+    [_contentViewController.view addSubview:self.maskView];
 }
 
 #pragma mark -
@@ -261,6 +275,7 @@
         self.menuViewContainer.transform = self.menuViewControllerTransformation;
     }
     self.menuViewContainer.alpha = !self.fadeMenuView ?: 0;
+    
     if (self.scaleBackgroundImageView)
         self.backgroundImageView.transform = CGAffineTransformMakeScale(1.7f, 1.7f);
     
@@ -281,7 +296,8 @@
     [self addContentButton];
     [self updateContentViewShadow];
     [self resetContentViewScale];
-    
+    self.maskView.hidden = self.maskViewEnabled ? NO : YES;
+   
     [UIView animateWithDuration:self.animationDuration animations:^{
         if (self.scaleContentView) {
             self.contentViewContainer.transform = CGAffineTransformMakeScale(self.contentViewScaleValue, self.contentViewScaleValue);
@@ -294,7 +310,8 @@
         } else {
             self.contentViewContainer.center = CGPointMake((UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ? self.contentViewInLandscapeOffsetCenterX + CGRectGetHeight(self.view.frame) : self.contentViewInPortraitOffsetCenterX + CGRectGetWidth(self.view.frame)), self.contentViewContainer.center.y);
         }
-
+        // --m
+        self.maskView.alpha = self.maskViewEnabled ? self.contentMaskViewAlpha : 0.f;
         self.menuViewContainer.alpha = !self.fadeMenuView ?: 1.0f;
         self.contentViewContainer.alpha = self.contentViewFadeOutAlpha;
         self.menuViewContainer.transform = CGAffineTransformIdentity;
@@ -328,6 +345,7 @@
     [self addContentButton];
     [self updateContentViewShadow];
     [self resetContentViewScale];
+    self.maskView.hidden = self.maskViewEnabled ? NO : YES;
     
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     [UIView animateWithDuration:self.animationDuration animations:^{
@@ -337,7 +355,8 @@
             self.contentViewContainer.transform = CGAffineTransformIdentity;
         }
         self.contentViewContainer.center = CGPointMake((UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ? -self.contentViewInLandscapeOffsetCenterX : -self.contentViewInPortraitOffsetCenterX), self.contentViewContainer.center.y);
-        
+        // --m
+        self.maskView.alpha = self.maskViewEnabled ? self.contentMaskViewAlpha : 0.f;
         self.menuViewContainer.alpha = !self.fadeMenuView ?: 1.0f;
         self.contentViewContainer.alpha = self.contentViewFadeOutAlpha;
         self.menuViewContainer.transform = CGAffineTransformIdentity;
@@ -374,7 +393,6 @@
     if ([self.delegate conformsToProtocol:@protocol(RESideMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:willHideMenuViewController:)]) {
         [self.delegate sideMenu:self willHideMenuViewController:rightMenuVisible ? self.rightMenuViewController : self.leftMenuViewController];
     }
-    
     self.visible = NO;
     self.leftMenuVisible = NO;
     self.rightMenuVisible = NO;
@@ -392,8 +410,8 @@
             strongSelf.menuViewContainer.transform = strongSelf.menuViewControllerTransformation;
         }
         strongSelf.menuViewContainer.alpha = !self.fadeMenuView ?: 0;
+        strongSelf.maskView.alpha = 0;
         strongSelf.contentViewContainer.alpha = 1;
-
         if (strongSelf.scaleBackgroundImageView) {
             strongSelf.backgroundImageView.transform = CGAffineTransformMakeScale(1.7f, 1.7f);
         }
@@ -537,7 +555,7 @@
   
     if (self.panFromEdge && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && !self.visible) {
         CGPoint point = [touch locationInView:gestureRecognizer.view];
-        if (point.x < 20.0 || point.x > self.view.frame.size.width - 20.0) {
+        if (point.x < 50.0 || point.x > self.view.frame.size.width - 50.0) {
             return YES;
         } else {
             return NO;
@@ -552,6 +570,7 @@
 
 - (void)panGestureRecognized:(UIPanGestureRecognizer *)recognizer
 {
+    
     if ([self.delegate conformsToProtocol:@protocol(RESideMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:didRecognizePanGesture:)])
         [self.delegate sideMenu:self didRecognizePanGesture:recognizer];
     
@@ -575,6 +594,7 @@
         [self addContentButton];
         [self.view.window endEditing:YES];
         self.didNotifyDelegate = NO;
+        self.maskView.hidden = NO;
     }
     
     if (recognizer.state == UIGestureRecognizerStateChanged) {
@@ -598,6 +618,8 @@
         }
         
         self.menuViewContainer.alpha = !self.fadeMenuView ?: delta;
+        self.maskView.alpha = self.maskViewEnabled ? self.contentMaskViewAlpha * delta : 0.f;
+
         self.contentViewContainer.alpha = 1 - (1 - self.contentViewFadeOutAlpha) * delta;
         
         if (self.scaleBackgroundImageView) {
@@ -616,19 +638,19 @@
         
        if (!self.bouncesHorizontally && self.visible) {
            if (self.contentViewContainer.frame.origin.x > self.contentViewContainer.frame.size.width / 2.0)
-               point.x = MIN(0.0, point.x);
+                point.x = MIN(0.0, point.x);
            
             if (self.contentViewContainer.frame.origin.x < -(self.contentViewContainer.frame.size.width / 2.0))
                 point.x = MAX(0.0, point.x);
         }
         
-        // Limit size
-        //
+
         if (point.x < 0) {
-            point.x = MAX(point.x, -[UIScreen mainScreen].bounds.size.height);
+            point.x = MAX(point.x, -([UIScreen mainScreen].bounds.size.width / 2 + self.contentViewInPortraitOffsetCenterX));
         } else {
-            point.x = MIN(point.x, [UIScreen mainScreen].bounds.size.height);
+            point.x = MIN(point.x, [UIScreen mainScreen].bounds.size.width / 2 + self.contentViewInPortraitOffsetCenterX);
         }
+        
         [recognizer setTranslation:point inView:self.view];
         
         if (!self.didNotifyDelegate) {
@@ -673,6 +695,7 @@
     }
     
    if (recognizer.state == UIGestureRecognizerStateEnded) {
+
         self.didNotifyDelegate = NO;
         if (self.panMinimumOpenThreshold > 0 && (
             (self.contentViewContainer.frame.origin.x < 0 && self.contentViewContainer.frame.origin.x > -((NSInteger)self.panMinimumOpenThreshold)) ||
