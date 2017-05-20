@@ -73,10 +73,12 @@
 @property (assign, readwrite, nonatomic) IBInspectable BOOL bouncesHorizontally;
 @property (assign, readwrite, nonatomic) UIStatusBarStyle menuPreferredStatusBarStyle;
 @property (assign, readwrite, nonatomic) IBInspectable BOOL menuPrefersStatusBarHidden;
-// --m
-@property (strong, readwrite, nonatomic) IBInspectable UIColor *contentMaskColor;
-@property (assign, readwrite, nonatomic) IBInspectable CGFloat contentMaskViewAlpha;
-@property (assign, readwrite, nonatomic) IBInspectable BOOL maskViewEnabled;
+
+@property (assign, readwrite, nonatomic) IBInspectable BOOL maskViewEnabled; //M
+@property (strong, readwrite, nonatomic) IBInspectable UIColor *contentMaskColor; //M
+@property (assign, readwrite, nonatomic) IBInspectable CGFloat contentMaskViewAlpha; //M
+
+@property (nonatomic, assign) CGFloat panGesturePointX; //M
 
 - (id)initWithContentViewController:(UIViewController *)contentViewController
              leftMenuViewController:(UIViewController *)leftMenuViewController

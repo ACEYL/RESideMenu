@@ -25,23 +25,22 @@
                                                                     leftMenuViewController:leftMenuViewController
                                                                    rightMenuViewController:rightMenuViewController];
     sideMenuViewController.backgroundImage = [UIImage imageNamed:@"Stars"];
-    sideMenuViewController.scaleContentView = NO;
     sideMenuViewController.menuPreferredStatusBarStyle = 1; // UIStatusBarStyleLightContent
     sideMenuViewController.delegate = self;
-    sideMenuViewController.contentViewShadowColor = [UIColor redColor];
-    sideMenuViewController.contentViewShadowOffset = CGSizeMake(80, 9);
-    sideMenuViewController.contentViewShadowOpacity = -1;
-    sideMenuViewController.contentViewShadowRadius = 12;
     
-    sideMenuViewController.contentViewShadowEnabled = YES;
-    sideMenuViewController.bouncesHorizontally = NO;
-    sideMenuViewController.parallaxEnabled = NO;
-    sideMenuViewController.contentViewInPortraitOffsetCenterX  = 120;
-    sideMenuViewController.scaleMenuView = NO;
-    sideMenuViewController.scaleBackgroundImageView = NO;
-    sideMenuViewController.maskViewEnabled = YES;
-    sideMenuViewController.contentMaskColor = [UIColor blackColor];
-    sideMenuViewController.contentMaskViewAlpha = 0.5;
+    sideMenuViewController.scaleContentView = NO; // 取消缩放
+    sideMenuViewController.scaleMenuView = NO; // 取消缩放
+    sideMenuViewController.scaleBackgroundImageView = NO; // 取消缩放
+    
+    sideMenuViewController.bouncesHorizontally = NO; // 取消弹簧
+    sideMenuViewController.parallaxEnabled = NO; // 取消陀螺仪感应
+    sideMenuViewController.contentViewInPortraitOffsetCenterX  = 120; // 偏移
+    
+    sideMenuViewController.panGesturePointX = 50; // 滑动手势触发距离
+    
+    sideMenuViewController.maskViewEnabled = YES; // 开启contentView的阴影效果
+    sideMenuViewController.contentMaskColor = [UIColor blackColor]; // 阴影颜色
+    sideMenuViewController.contentMaskViewAlpha = 0.5; // alpha值
     self.window.rootViewController = sideMenuViewController;
     
     self.window.backgroundColor = [UIColor whiteColor];
