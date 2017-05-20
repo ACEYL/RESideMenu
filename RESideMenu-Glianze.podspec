@@ -1,10 +1,11 @@
 Pod::Spec.new do |s|
-  s.name        = 'RESideMenu'
+  s.name        = 'RESideMenu-Glianze'
   s.version     = '4.0.7'
-  s.authors     = { 'Roman Efimov' => 'romefimov@gmail.com' }
-  s.homepage    = 'https://github.com/romaonthego/RESideMenu'
-  s.summary     = 'iOS 7 style side menu with parallax effect.'
-  s.source      = { :git => 'https://github.com/romaonthego/RESideMenu.git',
+  s.authors     = { 'Glianze' => 'glianze@163.com' }
+  s.homepage    = 'https://github.com/ACEYL/RESideMenu.git'
+  s.summary     = 'Modeled on the QQ to modify'
+  s.description = 'Modeled on the QQ to modify use to my object'
+  s.source      = { :git => 'https://github.com/ACEYL/RESideMenu.git',
                     :tag => s.version.to_s }
   s.license     = { :type => "MIT", :file => "LICENSE" }
 

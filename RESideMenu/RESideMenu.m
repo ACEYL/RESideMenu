@@ -69,7 +69,6 @@
 #if __IPHONE_8_0
 - (void)awakeFromNib
 {
-    [super awakeFromNib]; //M
     if (self.contentViewStoryboardID) {
         self.contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:self.contentViewStoryboardID];
     }
