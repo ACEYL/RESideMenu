@@ -2,9 +2,8 @@ Pod::Spec.new do |s|
   s.name        = 'RESideMenu-Glianze'
   s.version     = '4.0.7'
   s.authors     = { 'Glianze' => 'glianze@163.com' }
-  s.homepage    = 'https://github.com/ACEYL/RESideMenu.git'
+  s.homepage    = 'https://github.com/ACEYL/RESideMenu'
   s.summary     = 'Modeled on the QQ to modify'
-  s.description = 'Modeled on the QQ to modify use to my object'
   s.source      = { :git => 'https://github.com/ACEYL/RESideMenu.git',
                     :tag => s.version.to_s }
   s.license     = { :type => "MIT", :file => "LICENSE" }
