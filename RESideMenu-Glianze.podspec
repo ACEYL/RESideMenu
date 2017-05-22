@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name        = 'RESideMenu-Glianze'
-  s.version     = '4.0.7'
+  s.version     = '4.0.8'
   s.authors     = { 'Glianze' => 'glianze@163.com' }
   s.homepage    = 'https://github.com/ACEYL/RESideMenu'
   s.summary     = 'Modeled on the QQ to modify'
