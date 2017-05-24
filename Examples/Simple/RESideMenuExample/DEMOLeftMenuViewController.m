@@ -49,9 +49,11 @@
             [self.sideMenuViewController hideMenuViewController];
             break;
         case 1:
-            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:[[DEMOSecondViewController alloc] init]]
-                                                         animated:YES];
+//            [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:[[DEMOSecondViewController alloc] init]]
+//                                                         animated:YES];
             [self.sideMenuViewController hideMenuViewController];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"pushnotification" object:nil];
             break;
         default:
             break;

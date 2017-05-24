@@ -7,6 +7,7 @@
 //
 
 #import "DEMOFirstViewController.h"
+#import "DEMOSecondViewController.h"
 
 @interface DEMOFirstViewController ()
 
@@ -32,6 +33,14 @@
     imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     imageView.image = [UIImage imageNamed:@"Balloon"];
     [self.view addSubview:imageView];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotification) name:@"pushnotification" object:nil];
+}
+
+- (void)pushNotification
+{
+    DEMOSecondViewController *vc = [[DEMOSecondViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated
