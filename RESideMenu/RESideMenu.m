@@ -117,6 +117,7 @@
     _contentViewScaleValue = 0.7f;
     
     _panGesturePointX = 50.f; //M
+    _contentViewPanGesture = NO;
 }
 
 #pragma mark -
@@ -245,7 +246,11 @@
         self.view.multipleTouchEnabled = NO;
         UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
         panGestureRecognizer.delegate = self;
-        [self.view addGestureRecognizer:panGestureRecognizer];
+        if (_contentViewPanGesture) {
+            [_contentViewContainer addGestureRecognizer:panGestureRecognizer];
+        } else {
+            [self.view addGestureRecognizer:panGestureRecognizer];
+        }
     }
     
     [self updateContentViewShadow];

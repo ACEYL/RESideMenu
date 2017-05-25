@@ -77,6 +77,7 @@
 @property (assign, readwrite, nonatomic) IBInspectable BOOL maskViewEnabled; //M
 @property (strong, readwrite, nonatomic) IBInspectable UIColor *contentMaskColor; //M
 @property (assign, readwrite, nonatomic) IBInspectable CGFloat contentMaskViewAlpha; //M
+@property (assign, readwrite, nonatomic) IBInspectable BOOL contentViewPanGesture;
 
 @property (nonatomic, assign) CGFloat panGesturePointX; //M
 

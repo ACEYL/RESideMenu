@@ -41,6 +41,7 @@
     sideMenuViewController.maskViewEnabled = YES; // 开启contentView的阴影效果
     sideMenuViewController.contentMaskColor = [UIColor blackColor]; // 阴影颜色
     sideMenuViewController.contentMaskViewAlpha = 0.5; // alpha值
+    sideMenuViewController.contentViewPanGesture = YES;
     self.window.rootViewController = sideMenuViewController;
     
     self.window.backgroundColor = [UIColor whiteColor];
